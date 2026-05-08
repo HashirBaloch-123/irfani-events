@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        APP_URL     = 'http://localhost:3000'
+        APP_URL     = 'http://54.164.155.233:3000'
         MONGODB_URI = credentials('MONGODB_URI')
         IMAGE_APP   = 'irfani-events-app'
         IMAGE_TEST  = 'irfani-events-tests'
@@ -92,7 +92,7 @@ pipeline {
                 def status    = currentBuild.result ?: 'SUCCESS'
                 def emoji     = status == 'SUCCESS' ? '✅' : '❌'
                 def subject   = "${emoji} Irfani Events — Tests ${status} (Build #${env.BUILD_NUMBER})"
-                def appUrl    = env.APP_URL ?: 'http://localhost:3000'
+                def appUrl    = env.APP_URL ?: 'http://54.164.155.233:3000'
                 def committer = env.COMMITTER_EMAIL ?: 'unknown'
 
                 // If GitHub hid the email with noreply, use sir's real email
@@ -108,7 +108,7 @@ pipeline {
                       <tr><td><b>Build Number</b></td><td>${env.BUILD_NUMBER}</td></tr>
                       <tr><td><b>Triggered By</b></td><td>${committer}</td></tr>
                       <tr><td><b>Branch</b></td><td>${env.GIT_BRANCH}</td></tr>
-                      <tr><td><b>App URL</b></td><td>${appUrl}</td></tr>
+                      <tr><td><b>App URL</b></td><td><a href="${appUrl}">${appUrl}</a></td></tr>
                     </table>
                     <br>
                     <p>The full HTML test report is attached to this email.</p>
@@ -118,11 +118,11 @@ pipeline {
 
                 if (committer != 'unknown') {
                     emailext(
-                        to:                  "${recipient}",
-                        subject:             subject,
-                        body:                body,
-                        mimeType:            'text/html',
-                        attachmentsPattern:  'test-results/report.html'
+                        to:                 "${recipient}",
+                        subject:            subject,
+                        body:               body,
+                        mimeType:           'text/html',
+                        attachmentsPattern: 'test-results/report.html'
                     )
                 }
             }
